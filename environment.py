@@ -20,7 +20,8 @@ class CartPoleEnv:
             #    obs = obs[0]
             return obs, info
         elif self.mode == "real":
-            self.serial.write(b'RESET\n')
+            #self.serial.write(b'RESET\n')
+            input("CartPole bitte wieder in die Startposition bringen und Enter drücken...")
             line = self.serial.readline().decode().strip()
             obs = np.array([float(x) for x in line.split(',')])
             return obs, {}
@@ -33,11 +34,12 @@ class CartPoleEnv:
             return obs, reward, terminated, truncated, info
 
         elif self.mode == "real":
-            action_str = f"{float(action)}\n"
+            action_str = f"{float(action)}\n"  # TODO: Action normalisieren
             self.serial.write(action_str.encode())
             line = self.serial.readline().decode().strip()
             # Erwartet: obs als CSV, reward, done als 0/1, ggf. info
-            parts = line.split(';')
+            parts = line.split(' ')
+            # TODO: state berechnen
             obs = np.array([float(x) for x in parts[0].split(',')])
             reward = float(parts[1])
             terminated = bool(int(parts[2]))
